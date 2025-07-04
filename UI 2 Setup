@@ -1,0 +1,135 @@
+-- =================================================================================
+-- Step 1: Load the UI Library (This is the line you provided)
+-- =================================================================================
+-- We use pcall to safely load the library. This prevents errors if GitHub is down or the URL is wrong.
+local library
+local success, errorMessage = pcall(function()
+    library = loadstring(game:HttpGet("https://raw.githubusercontent.com/TylerIsHim1/BMHAutoBuy.github.io/refs/heads/main/UI%202", true))()
+end)
+
+if not success then
+    warn("UI Library failed to load:", errorMessage)
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Script Error",
+        Text = "Could not load the UI library. Check your internet connection or the script source.",
+        Duration = 10
+    })
+    return -- Stop the script if the library can't be loaded
+end
+
+
+-- =================================================================================
+-- Step 2: Create the Main Window
+-- The library you loaded likely has a `new` function to create the main window.
+-- =================================================================================
+local window = library.new("My Awesome Script") -- Give your script a name here
+
+
+-- =================================================================================
+-- Step 3: Create Your Tabs
+-- Use the window object to create tabs. The second argument is a Roblox asset ID for an icon.
+-- =================================================================================
+local mainTab = window:Tab("Main", "6035145364")
+local movementTab = window:Tab("Movement", "6034287594")
+local settingsTab = window:Tab("Settings", "6031280882")
+
+
+-- =================================================================================
+-- Step 4: Add Sections and Elements (Buttons, Toggles, etc.) to Your Tabs
+-- This is where you will add all your features.
+-- =================================================================================
+
+-- ---------------------------------
+-- Adding elements to the "Main" Tab
+-- ---------------------------------
+local mainSection1 = mainTab:section("Core Features", true) -- The 'true' makes the section open by default
+
+mainSection1:Button("Click Me!", function()
+    -- This code runs when the button is clicked.
+    -- Put your function call or feature code here.
+    print("Button was clicked!")
+    game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Button Clicked", Text = "You clicked the button!"})
+end)
+
+mainSection1:Button("Another Button", function()
+    print("Second button was pressed.")
+    -- Example: Trigger a server hop function
+    -- ServerHop() 
+end)
+
+local mainSection2 = mainTab:section("Other Features", false) -- 'false' makes it closed by default
+
+mainSection2:Label("This is an info label.") -- Use labels to display text or instructions
+
+mainSection2:Textbox("Player Name", "player_name_flag", "Enter name here", function(text)
+    -- This code runs when the user presses Enter after typing.
+    -- The 'text' variable holds what they typed.
+    print("User entered:", text)
+    -- Example: library.flags.player_name_flag will also hold the text
+end)
+
+
+-- ---------------------------------
+-- Adding elements to the "Movement" Tab
+-- ---------------------------------
+local movementSection = movementTab:section("Player Movement", true)
+
+movementSection:Toggle("Infinite Jump", "inf_jump_flag", false, function(state)
+    -- This code runs every time the toggle is clicked.
+    -- 'state' will be true if it's on, and false if it's off.
+    print("Infinite Jump is now:", state)
+    if state == true then
+        -- Code to turn Infinite Jump ON
+    else
+        -- Code to turn Infinite Jump OFF
+    end
+end)
+
+movementSection:Toggle("Noclip", "noclip_flag", false, function(state)
+    print("Noclip is now:", state)
+    -- Example: a global variable for a loop
+    getgenv().noclipEnabled = state
+end)
+
+movementSection:Slider("WalkSpeed", "walkspeed_flag", 16, 16, 200, false, function(value)
+    -- This code runs every time the slider value changes.
+    -- 'value' is the new number from the slider.
+    print("WalkSpeed changed to:", value)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+end)
+
+
+-- ---------------------------------
+-- Adding elements to the "Settings" Tab
+-- ---------------------------------
+local settingsSection = settingsTab:section("Configuration", true)
+
+settingsSection:Keybind("Toggle UI", "RightControl", function(key)
+    -- The callback runs when the key is pressed.
+    print("Toggle UI keybind pressed:", key)
+    -- Example: call a function to hide/show the UI
+    -- library.ToggleVisibility() or similar function
+end)
+
+settingsSection:Dropdown("Theme", "theme_flag", {"Dark", "Light", "Rainbow"}, function(choice)
+    -- This code runs when a choice is selected from the dropdown.
+    -- 'choice' will be "Dark", "Light", or "Rainbow".
+    print("Theme set to:", choice)
+    if choice == "Dark" then
+        -- Set dark theme
+    elseif choice == "Light" then
+        -- Set light theme
+    end
+end)
+
+settingsSection:Button("Unload Script", function()
+    print("Unloading script...")
+    -- Add code here to clean up and remove the script
+    if library.Destroy then
+        library.Destroy()
+    else
+        game:GetService("CoreGui"):FindFirstChild("Your_UI_Name"):Destroy()
+    end
+end)
+
+-- You can now continue to add more tabs, sections, and elements as needed.
